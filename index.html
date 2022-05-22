@@ -37,6 +37,11 @@ body {
     overflow: auto;
 }
 
+#records {
+    overflow: auto;
+    height: 377px;
+}
+
 #show {
     flex-direction: column;
     display: flex;
@@ -166,7 +171,7 @@ button:hover {
                 <button id="pause" onclick="reset()">Reset</button>
             </div>
             <footer>
-                <p>When you started the timer give 100% focus to your studies.<br>Don't use more than 1Hr at one go take 5-5 minutes break.<br><span style="color: rgb(0, 175, 239);">Study Timer</span> • <span style="color: rgb(0, 175, 239);">Developed by - <a target="_blank" href="https://www.instagram.com/utkarshencoder/" style="color: red;font-weight:bolder; font-size: 15px; text-decoration: none;">Utkarsh Sharma<span hidden>idea is given by 8375697265</span></a>
+                <p>When you started the timer give 100% focus to your studies.<br>Don't use more than 1Hr at one go take 5-5 minutes break.<br><span style="color: rgb(0, 175, 239);">Study Timer</span> • <span style="color: rgb(0, 175, 239);">Developed by - <a href="https://www.instagram.com/utkarshencoder/" target="_blank" style="color: red;font-weight:bolder; font-size: 15px; text-decoration: none;">Utkarsh Sharma<span hidden>idea is given by 8375697265</span></a>
                     </span>
                 </p>
             </footer>
@@ -174,15 +179,22 @@ button:hover {
         <section id="record">
             <h2><span id="shName"></span> Records</h2>
             <p style="font-weight: bold;">Total Time Spend - <span style="color: rgb(21, 241, 21);" id="total">00:00:00</span></p>
+            <button onclick="resetRecords()" id="resetRecord" style=" margin: 0!important;font-size:20px;height: 35px;border-radius: 5px;width: 100%; ">Reset Records</button>
             <p>───────</p>
             <p id="records"></p>
         </section>
     </div>
     <script>
-       var h = 0,
+       var
+    tempH = 0,
+    tempM = 0,
+    tempS = 0;
+var h = 0,
     m = 0,
     s = 0,
     start = 0,
+    running = 0,
+    userSeconds = 0,
     // Entered Time
     hh = 0,
     mm = 0,
@@ -198,16 +210,21 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+// reset the recor
+function resetRecords() {
+    total.innerHTML = "00:00:00";
+    timeArr = [];
+    records.innerHTML = "";
+}
+
 // Reset all the data
 function reset() {
     h = 0;
     m = 0;
     s = 0;
     start = 0;
-    timeArr = [];
-    records.innerHTML = "";
+    running = 0;
     time.innerHTML = "00:00:00";
-    total.innerHTML = "00:00:00";
     startbtn.innerText = "Start";
     startbtn.style.backgroundColor = "burlywood";
     startbtn.style.color = "black";
@@ -229,10 +246,11 @@ function calcTime() {
         minutes = ((mm <= 9) ? ("0" + mm) : mm),
         seconds = ((ss <= 9) ? ("0" + ss) : ss);
     calcT.innerHTML = ((hours == "00") ? "" : ("<span class='colorTime'>" + hours + "</span> hours, ")) + ((minutes == "00" && hours == "00") ? "" : ("<span class='colorTime'>" + minutes + "</span> minutes and ")) + ((seconds == "00" && minutes == "00" && hours == "00") ? "" : ("<span class='colorTime'>" + seconds + "</span> seconds"));
-
-    h = hh;
-    m = mm;
-    s = ss;
+    if (running == 0) {
+        h = hh;
+        m = mm;
+        s = ss;
+    }
 }
 calcTime();
 // format the time to string
@@ -245,9 +263,9 @@ function formatTime(hhh, mmm, sss, i = 0, color = 0) {
 
 // seconds to hh:mm:ss converter
 function secondsToTime(seconds) {
-    temps = parseInt(seconds % 60);
-    tempm = parseInt((seconds / 60) % 60)
-    temph = parseInt((seconds / 60) / 60);
+    let temps = parseInt(seconds % 60);
+    let tempm = parseInt((seconds / 60) % 60)
+    let temph = parseInt((seconds / 60) / 60);
     return (((temph <= 9) ? ("0" + temph) : temph) + ":" + ((tempm <= 9) ? ("0" + tempm) : tempm) + ":" + ((temps <= 9) ? ("0" + temps) : temps));
 }
 
@@ -261,6 +279,7 @@ async function startTime() {
     if (timeIn.value == 0 || timeIn.value == "") {
         return;
     }
+    running = 1;
     if (start == 1) {
         startbtn.innerText = "Start";
         startbtn.style.backgroundColor = "green";
@@ -273,8 +292,11 @@ async function startTime() {
         time.innerHTML = formatTime(h, m, s);
         console.log(formatTime(h, m, s))
         if ((h == 0 && m == 0 && s == 0)) {
+            running = 0;
             // for saving the completed time
-            timeArr.push([hh, mm, ss]);
+            if (hh != 0 || mm != 0 || ss != 0)
+                timeArr.push([hh, mm, ss]);
+
             startbtn.innerText = "Start";
             startbtn.style.backgroundColor = "burlywood";
             startbtn.style.color = "black";
