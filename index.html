@@ -33,12 +33,29 @@ body {
     justify-content: center;
 }
 
+#record {
+    max-height: 550px;
+    overflow: auto;
+}
+
 #show {
     display: flex;
 }
 
+#shName {
+    color: aqua;
+}
+
+input {
+    background-color: gray;
+    border-radius: 5px;
+    color: white;
+    border: none;
+    padding: 5px;
+}
+
 label {
-    font-size: 40pt;
+    color: rgb(168, 168, 168)
 }
 
 .inp {
@@ -134,129 +151,129 @@ button:hover {
             </footer>
         </section>
         <section id="record">
-            <h2 id="shName">Records</h2>
-            <p id="records"></p>
+            <h2><span id="shName"></span> Records</h2>
+            <p style="font-weight: bold;">Total Time Spend - <span style="color: rgb(21, 241, 21);" id="total">00:00:00</span></p>
             <p>───────</p>
-            <p style="font-weight: bold;">Total Time Spend - <span id="total">00:00:00</span></p>
+            <p id="records"></p>
         </section>
     </div>
     <script>
         var h = 0,
-            m = 0,
-            s = 0,
-            start = 0,
-            // Entered Time
-            hh = 0,
-            mm = 0,
-            ss = 0;
-        // for total seconds that is spent
-        var totalSeconds = 0;
-        // array for total spent time
-        var timeArr = [];
-        // task complete song
-        var audio = new Audio("audio.ogg");
+    m = 0,
+    s = 0,
+    start = 0,
+    // Entered Time
+    hh = 0,
+    mm = 0,
+    ss = 0;
+// for total seconds that is spent
+var totalSeconds = 0;
+// array for total spent time
+var timeArr = [];
+// task complete song
+var audio = new Audio("audio.ogg");
 
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-        // Reset all the data
-        function reset() {
-            h = 0;
-            m = 0;
-            s = 0;
-            start = 0;
-            timeArr = [];
-            records.innerHTML = "";
-            time.innerHTML = "00:00:00";
-            total.innerHTML = "00:00:00";
+// Reset all the data
+function reset() {
+    h = 0;
+    m = 0;
+    s = 0;
+    start = 0;
+    timeArr = [];
+    records.innerHTML = "";
+    time.innerHTML = "00:00:00";
+    total.innerHTML = "00:00:00";
+    startbtn.innerText = "Start";
+    startbtn.style.backgroundColor = "burlywood";
+    startbtn.style.color = "black";
+    calcTime();
+}
+
+// for input time seconds to time converter H:M:S
+function calcTime() {
+    var tin = timeIn.value;
+    var calcT = document.getElementById("calcT");
+    ss = parseInt(tin % 60);
+    mm = parseInt((tin / 60) % 60)
+    hh = parseInt((tin / 60) / 60);
+    calcT.innerHTML = ("Time - " + ((hh <= 9) ? ("0" + hh) : hh) + ":" + ((mm <= 9) ? ("0" + mm) : mm) + ":" + ((ss <= 9) ? ("0" + ss) : ss));
+    h = hh;
+    m = mm;
+    s = ss;
+}
+calcTime();
+// format the time to string
+function formatTime(hhh, mmm, sss) {
+    return ((((hhh <= 9) ? ("0" + hhh) : hhh) + ":" + ((mmm <= 9) ? ("0" + mmm) : mmm) + ":" + ((sss <= 9) ? ("0" + sss) : sss)));
+}
+
+// seconds to hh:mm:ss converter
+function secondsToTime(seconds) {
+    temps = parseInt(seconds % 60);
+    tempm = parseInt((seconds / 60) % 60)
+    temph = parseInt((seconds / 60) / 60);
+    return (((temph <= 9) ? ("0" + temph) : temph) + ":" + ((tempm <= 9) ? ("0" + tempm) : tempm) + ":" + ((temps <= 9) ? ("0" + temps) : temps));
+}
+
+// show name
+function showName() {
+    if (nameIn.value != "")
+        shName.innerHTML = nameIn.value + "'s ";
+}
+
+async function startTime() {
+    if (start == 1) {
+        startbtn.innerText = "Start";
+        startbtn.style.backgroundColor = "green";
+    } else {
+        startbtn.style.backgroundColor = "red";
+        startbtn.innerText = "Pause";
+    }
+    start = (start == 0 ? 1 : 0);
+    while (start == 1) {
+        time.innerHTML = formatTime(h, m, s);
+        console.log(formatTime(h, m, s))
+        if ((h == 0 && m == 0 && s == 0)) {
+            // for saving the completed time
+            timeArr.push([hh, mm, ss]);
             startbtn.innerText = "Start";
             startbtn.style.backgroundColor = "burlywood";
             startbtn.style.color = "black";
+            start = 0;
+            totalSeconds = 0;
+            records.innerHTML = "";
+            // playing song
+            audio.play();
+            // for Updating record and total time
+            for (let i = 0; i < timeArr.length; i++) {
+                // showing record data
+                records.innerHTML += (i + 1) + ". Completed " + "<span style='color: rgb(0,175,239);'>" + formatTime(timeArr[i][0], timeArr[i][1], timeArr[i][2]) + '</span>' + "<br>";
+                // calculating total seconds & convert into time
+                totalSeconds += timeArr[i][2] + (timeArr[i][1] * 60) + (timeArr[i][0] * 3600);
+            }
             calcTime();
+            // showing the total time
+            total.innerHTML = secondsToTime(totalSeconds);
+            break;
         }
-
-        // for input time seconds to time converter H:M:S
-        function calcTime() {
-            var tin = timeIn.value;
-            var calcT = document.getElementById("calcT");
-            ss = parseInt(tin % 60);
-            mm = parseInt((tin / 60) % 60)
-            hh = parseInt((tin / 60) / 60);
-            calcT.innerHTML = ("Time - " + ((hh <= 9) ? ("0" + hh) : hh) + ":" + ((mm <= 9) ? ("0" + mm) : mm) + ":" + ((ss <= 9) ? ("0" + ss) : ss));
-            h = hh;
-            m = mm;
-            s = ss;
-        }
-        calcTime();
-        // format the time to string
-        function formatTime(hhh, mmm, sss) {
-            return ((((hhh <= 9) ? ("0" + hhh) : hhh) + ":" + ((mmm <= 9) ? ("0" + mmm) : mmm) + ":" + ((sss <= 9) ? ("0" + sss) : sss)));
-        }
-
-        // seconds to hh:mm:ss converter
-        function secondsToTime(seconds) {
-            temps = parseInt(seconds % 60);
-            tempm = parseInt((seconds / 60) % 60)
-            temph = parseInt((seconds / 60) / 60);
-            return (((temph <= 9) ? ("0" + temph) : temph) + ":" + ((tempm <= 9) ? ("0" + tempm) : tempm) + ":" + ((temps <= 9) ? ("0" + temps) : temps));
-        }
-
-        // show name
-        function showName() {
-            if (nameIn.value != "")
-                shName.innerHTML = nameIn.value + "'s Records";
-        }
-
-        async function startTime() {
-            if (start == 1) {
-                startbtn.innerText = "Start";
-                startbtn.style.backgroundColor = "green";
-            } else {
-                startbtn.style.backgroundColor = "red";
-                startbtn.innerText = "Pause";
+        if (s == 0) {
+            if (m > 0) {
+                m--;
+            } else if (m == 0 && h > 0) {
+                m = 59;
+                h--;
             }
-            start = (start == 0 ? 1 : 0);
-            while (start == 1) {
-                time.innerHTML = formatTime(h, m, s);
-                console.log(formatTime(h, m, s))
-                if ((h == 0 && m == 0 && s == 0)) {
-                    // for saving the completed time
-                    timeArr.push([hh, mm, ss]);
-                    startbtn.innerText = "Start";
-                    startbtn.style.backgroundColor = "burlywood";
-                    startbtn.style.color = "black";
-                    start = 0;
-                    totalSeconds = 0;
-                    records.innerHTML = "";
-                    // playing song
-                    audio.play();
-                    // for Updating record and total time
-                    for (let i = 0; i < timeArr.length; i++) {
-                        // showing record data
-                        records.innerHTML += (i + 1) + ". Completed " + formatTime(timeArr[i][0], timeArr[i][1], timeArr[i][2]) + "<br>";
-                        // calculating total seconds & convert into time
-                        totalSeconds += timeArr[i][2] + (timeArr[i][1] * 60) + (timeArr[i][0] * 3600);
-                    }
-                    calcTime();
-                    // showing the total time
-                    total.innerHTML = secondsToTime(totalSeconds);
-                    break;
-                }
-                if (s == 0) {
-                    if (m > 0) {
-                        m--;
-                    } else if (m == 0 && h > 0) {
-                        m = 59;
-                        h--;
-                    }
-                    s = 60;
-                }
-                s--;
-                await sleep(1000);
-
-            }
+            s = 60;
         }
+        s--;
+        await sleep(1000);
+
+    }
+}
     </script>
 </body>
 
