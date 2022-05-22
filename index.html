@@ -39,11 +39,25 @@ body {
 }
 
 #show {
+    flex-direction: column;
     display: flex;
+    align-content: center;
+    justify-content: center;
+    align-items: baseline;
+}
+
+.colorTime {
+    color: rgb(0, 175, 239);
 }
 
 #shName {
     color: aqua;
+}
+
+.timeformat {
+    color: #03a9f4;
+    font-size: 15pt;
+    margin-bottom: 20px;
 }
 
 input {
@@ -121,6 +135,7 @@ button:hover {
 
 #time {
     margin-left: 10px;
+    height: 171px;
 }
     </style>
 </head>
@@ -141,6 +156,11 @@ button:hover {
             </div>
             <div id="show">
                 <h1 id="time">00:00:00</h1>
+                <p class="timeformat">
+                    <span style="margin-left: 15px;margin-right: 170px;">Hours</span>
+                    <span style="margin-right: 152px;">Minutes</span>
+                    <span>Seconds</span>
+                </p>
             </div>
             <div id="menu">
                 <button id="startbtn" onclick="startTime()">Start</button>
@@ -207,7 +227,10 @@ function calcTime() {
 }
 calcTime();
 // format the time to string
-function formatTime(hhh, mmm, sss) {
+function formatTime(hhh, mmm, sss, i = 0, color = 0) {
+    if (color == 1) {
+        return (((i + 1) + ". Completed " + "<span class='colorTime'>" + ((hhh <= 9) ? ("0" + hhh) : hhh) + "</span>:<span class='colorTime'>" + ((mmm <= 9) ? ("0" + mmm) : mmm) + "</span>:<span class='colorTime'>" + ((sss <= 9) ? ("0" + sss) : sss) + "</span>" + "<br>"));
+    }
     return ((((hhh <= 9) ? ("0" + hhh) : hhh) + ":" + ((mmm <= 9) ? ("0" + mmm) : mmm) + ":" + ((sss <= 9) ? ("0" + sss) : sss)));
 }
 
@@ -226,6 +249,9 @@ function showName() {
 }
 
 async function startTime() {
+    if (timeIn.value == 0 || timeIn.value == "") {
+        return;
+    }
     if (start == 1) {
         startbtn.innerText = "Start";
         startbtn.style.backgroundColor = "green";
@@ -250,10 +276,13 @@ async function startTime() {
             audio.play();
             // for Updating record and total time
             for (let i = 0; i < timeArr.length; i++) {
+                let hour = timeArr[i][0],
+                    minutes = timeArr[i][1],
+                    second = timeArr[i][2];
                 // showing record data
-                records.innerHTML += (i + 1) + ". Completed " + "<span style='color: rgb(0,175,239);'>" + formatTime(timeArr[i][0], timeArr[i][1], timeArr[i][2]) + '</span>' + "<br>";
-                // calculating total seconds & convert into time
-                totalSeconds += timeArr[i][2] + (timeArr[i][1] * 60) + (timeArr[i][0] * 3600);
+                records.innerHTML += formatTime(hour, minutes, second, i, 1)
+                    // calculating total seconds & convert into time
+                totalSeconds += second + (minutes * 60) + (hour * 3600);
             }
             calcTime();
             // showing the total time
