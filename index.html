@@ -141,7 +141,7 @@ button:hover {
 </head>
 
 <body>
-    <div id="full">
+     <div id="full">
         <section class="box">
             <div class="input">
                 <div class="nameInput">
@@ -150,8 +150,8 @@ button:hover {
                 </div>
                 <div class="timeInput">
                     <label class="FontSize20" for="timein">Enter seconds</label>
-                    <input class="inp FontSize20" type="number" name="timein" value="1500" autofocus id="timeIn" onclick="this.select()" onkeyup="calcTime()">
-                    <p class="FontSize20" id="calcT">Time - 00:00:00</p>
+                    <input class="inp FontSize20" style="margin-bottom: 0!important;" type="number" name="timein" value="1500" autofocus id="timeIn" onclick="this.select()" onkeyup="calcTime()">
+                    <p class="FontSize20">Total time: <span id="calcT"></span></p>
                 </div>
             </div>
             <div id="show">
@@ -167,7 +167,9 @@ button:hover {
                 <button id="pause" onclick="reset()">Reset</button>
             </div>
             <footer>
-                <p>When you started the timer give 100% focus to your studies.<br>Don't use more than 1Hr at one go take 5-5 minutes break.<br><span style="color: rgb(0, 175, 239);">Study Timer</span></p>
+                <p>When you started the timer give 100% focus to your studies.<br>Don't use more than 1Hr at one go take 5-5 minutes break.<br><span style="color: rgb(0, 175, 239);">Study Timer</span> • <span style="color: rgb(0, 175, 239);">Developed by - <a href="https://www.instagram.com/utkarshencoder/" style="color: red;font-weight:bolder; font-size: 15px; text-decoration: none;">Utkarsh Sharma<span hidden>idea is given by 8375697265</span></a>
+                    </span>
+                </p>
             </footer>
         </section>
         <section id="record">
@@ -178,7 +180,7 @@ button:hover {
         </section>
     </div>
     <script>
-        var h = 0,
+       var h = 0,
     m = 0,
     s = 0,
     start = 0,
@@ -220,7 +222,15 @@ function calcTime() {
     ss = parseInt(tin % 60);
     mm = parseInt((tin / 60) % 60)
     hh = parseInt((tin / 60) / 60);
-    calcT.innerHTML = ("Time - " + ((hh <= 9) ? ("0" + hh) : hh) + ":" + ((mm <= 9) ? ("0" + mm) : mm) + ":" + ((ss <= 9) ? ("0" + ss) : ss));
+    if (tin == 0 || tin == "") {
+        calcT.innerHTML = "please enter time";
+        return;
+    }
+    let hours = ((hh <= 9) ? ("0" + hh) : hh),
+        minutes = ((mm <= 9) ? ("0" + mm) : mm),
+        seconds = ((ss <= 9) ? ("0" + ss) : ss);
+    calcT.innerHTML = ((hours == "00") ? "" : ("<span class='colorTime'>" + hours + "</span> hours, ")) + ((minutes == "00" && hours == "00") ? "" : ("<span class='colorTime'>" + minutes + "</span> minutes and ")) + ((seconds == "00" && minutes == "00" && hours == "00") ? "" : ("<span class='colorTime'>" + seconds + "</span> seconds"));
+
     h = hh;
     m = mm;
     s = ss;
@@ -229,7 +239,7 @@ calcTime();
 // format the time to string
 function formatTime(hhh, mmm, sss, i = 0, color = 0) {
     if (color == 1) {
-        return (((i + 1) + ". Completed " + "<span class='colorTime'>" + ((hhh <= 9) ? ("0" + hhh) : hhh) + "</span>:<span class='colorTime'>" + ((mmm <= 9) ? ("0" + mmm) : mmm) + "</span>:<span class='colorTime'>" + ((sss <= 9) ? ("0" + sss) : sss) + "</span>" + "<br>"));
+        return (((i + 1) + ". Completed <span class='colorTime'>" + ((hhh <= 9) ? ("0" + hhh) : hhh) + "</span>:<span class='colorTime'>" + ((mmm <= 9) ? ("0" + mmm) : mmm) + "</span>:<span class='colorTime'>" + ((sss <= 9) ? ("0" + sss) : sss) + "</span>" + "<br>"));
     }
     return ((((hhh <= 9) ? ("0" + hhh) : hhh) + ":" + ((mmm <= 9) ? ("0" + mmm) : mmm) + ":" + ((sss <= 9) ? ("0" + sss) : sss)));
 }
