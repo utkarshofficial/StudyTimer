@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Timer</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: black;
+            color: white
+        }
+        
+        #record {
+            padding: 16px;
+            font-size: 20pt;
+            border: 2px solid white;
+            margin: 10px;
+        }
+        
+        #full {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: row;
+            align-content: center;
+            justify-content: center;
+        }
+        
+        #show {
+            display: flex;
+        }
+        
+        label {
+            font-size: 40pt;
+        }
+        
+        .inp {
+            font-size: 20pt;
+            margin-bottom: 20px;
+            width: 600px;
+        }
+        
+        .FontSize20 {
+            font-size: 20pt;
+        }
+        
+        .box {
+            color: white;
+            margin: 0;
+            height: 600px;
+            border: solid black 2px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 80pt;
+        }
+        
+        .input {
+            font-size: 10pt;
+        }
+        
+        .timeInput {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .nameInput {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #menu {
+            display: flex;
+        }
+        
+        button {
+            text-decoration: none;
+            background-color: burlywood;
+            border: none;
+            border-radius: 20px;
+            margin: 10px;
+            width: 150px;
+            height: 60px;
+            font-size: xx-large;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            color: white;
+            background-color: green;
+        }
+        
+        #time {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="full">
+        <section class="box">
+            <div class="input">
+                <div class="nameInput">
+                    <label class="FontSize20" for="name">Enter your name</label>
+                    <input type="text" name="name" autofocus id="nameIn" onclick="this.select()" onkeyup="showName()" class="inp FontSize20">
+                </div>
+                <div class="timeInput">
+                    <label class="FontSize20" for="timein">Enter seconds</label>
+                    <input class="inp FontSize20" type="number" name="timein" value="1500" autofocus id="timeIn" onclick="this.select()" onkeyup="calcTime()">
+                    <p class="FontSize20" id="calcT">Time - 00:00:00</p>
+                </div>
+            </div>
+            <div id="show">
+                <h1 id="time">00:00:00</h1>
+            </div>
+            <div id="menu">
+                <button id="startbtn" onclick="startTime()">Start</button>
+                <button id="pause" onclick="reset()">Reset</button>
+            </div>
+        </section>
+        <section id="record">
+            <h2 id="shName">Records</h2>
+            <p id="records"></p>
+            <p>───────</p>
+            <p style="font-weight: bold;">Total Time Spend - <span id="total">00:00:00</span></p>
+        </section>
+    </div>
+    <script>
+        var h = 0,
+            m = 0,
+            s = 0,
+            start = 0,
+            // Entered Time
+            hh = 0,
+            mm = 0,
+            ss = 0;
+        // for total seconds that is spent
+        var totalSeconds = 0;
+        // array for total spent time
+        var timeArr = [];
+        // task complete song
+        var audio = new Audio("audio.ogg");
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // Reset all the data
+        function reset() {
+            h = 0;
+            m = 0;
+            s = 0;
+            start = 0;
+            timeArr = [];
+            records.innerHTML = "";
+            time.innerHTML = "00:00:00";
+            total.innerHTML = "00:00:00";
+            startbtn.innerText = "Start";
+            startbtn.style.backgroundColor = "burlywood";
+            startbtn.style.color = "black";
+            calcTime();
+        }
+
+        // for input time seconds to time converter H:M:S
+        function calcTime() {
+            var tin = timeIn.value;
+            var calcT = document.getElementById("calcT");
+            ss = parseInt(tin % 60);
+            mm = parseInt((tin / 60) % 60)
+            hh = parseInt((tin / 60) / 60);
+            calcT.innerHTML = ("Time - " + ((hh <= 9) ? ("0" + hh) : hh) + ":" + ((mm <= 9) ? ("0" + mm) : mm) + ":" + ((ss <= 9) ? ("0" + ss) : ss));
+            h = hh;
+            m = mm;
+            s = ss;
+        }
+        calcTime();
+        // format the time to string
+        function formatTime(hhh, mmm, sss) {
+            return ((((hhh <= 9) ? ("0" + hhh) : hhh) + ":" + ((mmm <= 9) ? ("0" + mmm) : mmm) + ":" + ((sss <= 9) ? ("0" + sss) : sss)));
+        }
+
+        // seconds to hh:mm:ss converter
+        function secondsToTime(seconds) {
+            temps = parseInt(seconds % 60);
+            tempm = parseInt((seconds / 60) % 60)
+            temph = parseInt((seconds / 60) / 60);
+            return (((temph <= 9) ? ("0" + temph) : temph) + ":" + ((tempm <= 9) ? ("0" + tempm) : tempm) + ":" + ((temps <= 9) ? ("0" + temps) : temps));
+        }
+
+        // show name
+        function showName() {
+            if (nameIn.value != "")
+                shName.innerHTML = nameIn.value + "'s Records";
+        }
+
+        async function startTime() {
+            if (start == 1) {
+                startbtn.innerText = "Start";
+                startbtn.style.backgroundColor = "green";
+            } else {
+                startbtn.style.backgroundColor = "red";
+                startbtn.innerText = "Pause";
+            }
+            start = (start == 0 ? 1 : 0);
+            while (start == 1) {
+                time.innerHTML = formatTime(h, m, s);
+                console.log(formatTime(h, m, s))
+                if ((h == 0 && m == 0 && s == 0)) {
+                    // for saving the completed time
+                    timeArr.push([hh, mm, ss]);
+                    startbtn.innerText = "Start";
+                    startbtn.style.backgroundColor = "burlywood";
+                    startbtn.style.color = "black";
+                    start = 0;
+                    totalSeconds = 0;
+                    records.innerHTML = "";
+                    // playing song
+                    audio.play();
+                    // for Updating record and total time
+                    for (let i = 0; i < timeArr.length; i++) {
+                        // showing record data
+                        records.innerHTML += (i + 1) + ". Completed " + formatTime(timeArr[i][0], timeArr[i][1], timeArr[i][2]) + "<br>";
+                        // calculating total seconds & convert into time
+                        totalSeconds += timeArr[i][2] + (timeArr[i][1] * 60) + (timeArr[i][0] * 3600);
+                    }
+                    calcTime();
+                    // showing the total time
+                    total.innerHTML = secondsToTime(totalSeconds);
+                    break;
+                }
+                if (s == 0) {
+                    if (m > 0) {
+                        m--;
+                    } else if (m == 0 && h > 0) {
+                        m = 59;
+                        h--;
+                    }
+                    s = 60;
+                }
+                s--;
+                await sleep(1000);
+
+            }
+        }
+    </script>
+</body>
+
+</html>
