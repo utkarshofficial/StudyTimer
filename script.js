@@ -86,8 +86,13 @@ function secondsToTime(seconds) {
 
 // show name
 function showName() {
-    if (nameIn.value != "")
+    if (nameIn.value != ""){
         shName.innerHTML = nameIn.value + "'s ";
+        localStorage.setItem("user",nameIn.value);
+    }
+    else{
+        shName.innerHTML = "";
+    }
 }
 
 async function startTime() {
@@ -112,6 +117,7 @@ async function startTime() {
             if (hh != 0 || mm != 0 || ss != 0){
                 timeArr.unshift([hh, mm, ss]);
                 localStorage.setItem("records",JSON.stringify(timeArr));
+                document.title = "Study Timer";
             }
 
             startbtn.innerText = "Start";
@@ -137,6 +143,10 @@ async function startTime() {
         s--;
         await sleep(1000);
     }
+}
+// for updating name if it i stored
+if(localStorage.getItem("user")){
+    shName.innerHTML = localStorage.getItem("user") + "'s";
 }
 
 // for updating records if it is stored 
