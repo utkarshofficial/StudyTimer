@@ -142,6 +142,11 @@ button:hover {
     overflow-y: scroll;
     height: 340px;
 }
+
+#record > h2{
+    font-size: 22pt;
+    overflow: scroll;
+}
 @media only screen and (max-width: 705px) {
     #full{
         flex-direction: column;
