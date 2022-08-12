@@ -138,6 +138,10 @@ button:hover {
     height: 171px;
 }
 
+.record-box{
+    overflow-y: scroll;
+    height: 340px;
+}
 @media only screen and (max-width: 705px) {
     #full{
         flex-direction: column;
@@ -192,7 +196,6 @@ button:hover {
         margin-bottom: 4px;
     }
     .record-box{
-        overflow-y: scroll;
         height: 140px;
     }
 }

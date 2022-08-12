@@ -20,13 +20,15 @@ var timeArr = [];
 var audio = new Audio("audio.ogg");
 
 function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    // workerTimer is webworker for timer
+    return new Promise(resolve => workerTimer.setInterval(resolve, ms));
 }
 
 // reset the recor
 function resetRecords() {
     total.innerHTML = "00:00:00";
     timeArr = [];
+    localStorage.removeItem("records");
     records.innerHTML = "";
 }
 
@@ -102,35 +104,25 @@ async function startTime() {
     }
     start = (start == 0 ? 1 : 0);
     while (start == 1) {
+        document.title = "Time " + (formatTime(h, m, s))
         time.innerHTML = formatTime(h, m, s);
-        console.log(formatTime(h, m, s))
         if ((h == 0 && m == 0 && s == 0)) {
             running = 0;
             // for saving the completed time
-            if (hh != 0 || mm != 0 || ss != 0)
-                timeArr.push([hh, mm, ss]);
+            if (hh != 0 || mm != 0 || ss != 0){
+                timeArr.unshift([hh, mm, ss]);
+                localStorage.setItem("records",JSON.stringify(timeArr));
+            }
 
             startbtn.innerText = "Start";
             startbtn.style.backgroundColor = "burlywood";
             startbtn.style.color = "black";
             start = 0;
-            totalSeconds = 0;
             records.innerHTML = "";
             // playing song
             audio.play();
             // for Updating record and total time
-            for (let i = 0; i < timeArr.length; i++) {
-                let hour = timeArr[i][0],
-                    minutes = timeArr[i][1],
-                    second = timeArr[i][2];
-                // showing record data
-                records.innerHTML += formatTime(hour, minutes, second, i, 1)
-                    // calculating total seconds & convert into time
-                totalSeconds += second + (minutes * 60) + (hour * 3600);
-            }
-            calcTime();
-            // showing the total time
-            total.innerHTML = secondsToTime(totalSeconds);
+            updateRecords();
             break;
         }
         if (s == 0) {
@@ -144,6 +136,62 @@ async function startTime() {
         }
         s--;
         await sleep(1000);
-
     }
 }
+
+// for updating records if it is stored 
+if(localStorage.getItem("records")){
+    timeArr = JSON.parse(localStorage.getItem("records"));
+    updateRecords();
+}
+
+// update record funciton
+function updateRecords(){
+    let totalSeconds = 0;
+    // for Updating record and total time
+    for (let i = 0; i < timeArr.length; i++) {
+        let hour = timeArr[i][0],
+            minutes = timeArr[i][1],
+            second = timeArr[i][2];
+        // showing record data
+        records.innerHTML += formatTime(hour, minutes, second, i, 1)
+            // calculating total seconds & convert into time
+        totalSeconds += second + (minutes * 60) + (hour * 3600);
+    }
+    calcTime();
+    // showing the total time
+    total.innerHTML = secondsToTime(totalSeconds);
+}
+
+// for webworkers so the timer is now slowdown
+var worker = new Worker('timer-worker.js')
+var workerTimer = {
+    id: 0,
+    callbacks: {},
+    setInterval: function(cb, interval, context) {
+        this.id++
+        var id = this.id
+        this.callbacks[id] = { fn: cb, context: context }
+        worker.postMessage({
+            command: 'interval:start',
+            interval: interval,
+            id: id
+        })
+        return id
+    },
+    onMessage: function(e) {
+        switch (e.data.message) {
+            case 'interval:tick':
+                var callback = this.callbacks[e.data.id]
+                if (callback && callback.fn) callback.fn.apply(callback.context)
+                break
+            case 'interval:cleared':
+                delete this.callbacks[e.data.id]
+                break
+        }
+    },
+    clearInterval: function(id) {
+        worker.postMessage({ command: 'interval:clear', id: id })
+    }
+}
+worker.onmessage = workerTimer.onMessage.bind(workerTimer)
