@@ -87,8 +87,9 @@ function secondsToTime(seconds) {
 // show name
 function showName() {
     if (nameIn.value != ""){
-        shName.innerHTML = nameIn.value + "'s ";
-        localStorage.setItem("user",nameIn.value);
+        let name = nameIn.value;
+        shName.innerHTML = name.trim() + "'s ";
+        localStorage.setItem("user",name.trim());
     }
     else{
         shName.innerHTML = "";
@@ -147,6 +148,7 @@ async function startTime() {
 // for updating name if it i stored
 if(localStorage.getItem("user")){
     shName.innerHTML = localStorage.getItem("user") + "'s";
+    nameIn.value = localStorage.getItem("user");
 }
 
 // for updating records if it is stored 
