@@ -139,13 +139,13 @@ button:hover {
 }
 
 .record-box{
-    overflow-y: scroll;
+    overflow-y: auto;
     height: 340px;
 }
 
 #record > h2{
     font-size: 22pt;
-    overflow: scroll;
+    overflow-x: auto;
 }
 @media only screen and (max-width: 705px) {
     #full{
