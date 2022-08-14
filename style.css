@@ -138,53 +138,62 @@ button:hover {
     height: 171px;
 }
 
-.record-box{
+.record-box {
     overflow-y: auto;
-    height: 340px;
+    height: 320px;
 }
 
-#record > h2{
+#record>h2 {
     font-size: 22pt;
     overflow-x: auto;
 }
+
 @media only screen and (max-width: 705px) {
-    #full{
+    #full {
         flex-direction: column;
         width: 100%;
     }
-    .box{
+
+    .box {
         height: fit-content;
         margin-bottom: 20px;
     }
-    #time{
+
+    #time {
         margin-top: 20px;
         margin-left: 0;
         font-size: 23.4vw;
         height: 90px
     }
-    .timeformat > :nth-child(1){
-        margin-left: 5px!important;
-        margin-right: 16vw!important;
+
+    .timeformat> :nth-child(1) {
+        margin-left: 5px !important;
+        margin-right: 16vw !important;
     }
-    .timeformat > :nth-child(2){
-        margin-right: 12vw!important;
+
+    .timeformat> :nth-child(2) {
+        margin-right: 12vw !important;
     }
-    .timeInput>p{
+
+    .timeInput>p {
         font-size: 15pt;
     }
-    #menu > button{
+
+    #menu>button {
         font-size: 17pt;
         padding: 10px;
         width: 110px;
         height: 50px;
-    }   
-    #show{
+    }
+
+    #show {
         position: sticky;
         top: 0;
         background-color: black;
         box-shadow: 5px 10px 18px #000000;
     }
-    #record{
+
+    #record {
         width: 95vw;
         margin: auto;
         margin-bottom: 20px;
@@ -193,14 +202,17 @@ button:hover {
         background-color: rgb(80, 80, 80);
         border: none;
     }
-    #record > h2{
+
+    #record>h2 {
         font-size: 22pt;
     }
-    #record > p{
+
+    #record>p {
         font-size: 15pt;
         margin-bottom: 4px;
     }
-    .record-box{
+
+    .record-box {
         height: 140px;
     }
 }
