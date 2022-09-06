@@ -1,57 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Study Timer</title>
+  </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Study Timer</title>        
-</head>
-
-<body>
-     <div id="full">
-        <section class="box">
-            <div class="input">
-                <div class="nameInput">
-                    <label class="FontSize20" for="name">Enter your name</label>
-                    <input type="text" name="name" autofocus id="nameIn" onclick="this.select()" onkeyup="showName()" class="inp FontSize20">
-                </div>
-                <div class="timeInput">
-                    <label class="FontSize20" for="timein">Enter seconds</label>
-                    <input class="inp FontSize20" style="margin-bottom: 0!important;" type="number" name="timein" value="1500" autofocus id="timeIn" onclick="this.select()" onkeyup="calcTime()">
-                    <p class="FontSize20">Total time: <span id="calcT"></span></p>
-                </div>
-            </div>
-            <div id="show">
-                <h1 id="time">00:00:00</h1>
-                <p class="timeformat">
-                    <span style="margin-left: 15px;margin-right: 170px;">Hours</span>
-                    <span style="margin-right: 152px;">Minutes</span>
-                    <span>Seconds</span>
-                </p>
-            </div>
-            <div id="menu">
-                <button id="startbtn" onclick="startTime()">Start</button>
-                <button id="pause" onclick="reset()">Reset</button>
-            </div>
-            <footer>
-                <p>When you started the timer give 100% focus to your studies.<br>Don't use more than 1Hr at one go take 5-5 minutes break.<br><span style="color: rgb(0, 175, 239);">Study Timer</span> • <span style="color: rgb(0, 175, 239);">Developed by - <a href="https://www.instagram.com/utkarshencoder/" target="_blank" style="color: red;font-weight:bolder; font-size: 15px; text-decoration: none;">Utkarsh Sharma<span hidden>idea is given by 8375697265</span></a>
-                    </span>
-                </p>
-            </footer>
-        </section>
-        <section id="record">
-            <h2><span id="shName"></span> Records</h2>
-            <p style="font-weight: bold;">Total Time Spend - <span style="color: rgb(21, 241, 21);" id="total">00:00:00</span></p>
-            <button onclick="resetRecords()" id="resetRecord" style=" margin: 0!important;font-size:20px;height: 35px;border-radius: 5px;width: 100%; ">Reset Records</button>
-            <p>───────</p>
-            <div class="record-box">
-                <p id="records"></p>
-            </div>
-        </section>
+  <body>
+    <div id="full">
+      <section class="box">
+        <div class="input">
+          <div class="nameInput">
+            <label class="FontSize20" for="name">Enter your name</label>
+            <input
+              type="text"
+              name="name"
+              autofocus
+              id="nameIn"
+              onclick="this.select()"
+              onkeyup="showName()"
+              class="inp FontSize20"
+            />
+          </div>
+          <div class="timeInput">
+            <label class="FontSize20" for="timein"
+              >Enter seconds or Enter 0 for stopwatch</label
+            >
+            <input
+              class="inp FontSize20"
+              style="margin-bottom: 0 !important"
+              type="number"
+              name="timein"
+              value="1500"
+              autofocus
+              id="timeIn"
+              onclick="this.select()"
+              onkeyup="calcTime()"
+            />
+            <p class="FontSize20">Total time: <span id="calcT"></span></p>
+          </div>
+        </div>
+        <div id="show">
+          <h1 id="time">00:00:00</h1>
+          <p class="timeformat">
+            <span style="margin-left: 15px; margin-right: 170px">Hours</span>
+            <span style="margin-right: 152px">Minutes</span>
+            <span>Seconds</span>
+          </p>
+        </div>
+        <div id="menu">
+          <button id="startbtn" onclick="startTime()">Start</button>
+          <button id="pause" onclick="reset()">Reset</button>
+        </div>
+        <footer>
+          <p>
+            When you started the timer give 100% focus to your studies.<br />Don't
+            use more than 1Hr at one go take 5-5 minutes break.<br /><span
+              style="color: rgb(0, 175, 239)"
+              >Study Timer</span
+            >
+            •
+            <span style="color: rgb(0, 175, 239)"
+              >Developed by -
+              <a
+                href="https://www.instagram.com/utkarshencoder/"
+                target="_blank"
+                style="
+                  color: red;
+                  font-weight: bolder;
+                  font-size: 15px;
+                  text-decoration: none;
+                "
+                >Utkarsh Sharma<span hidden
+                  >idea is given by 8375697265</span
+                ></a
+              >
+            </span>
+          </p>
+        </footer>
+      </section>
+      <section id="record">
+        <h2><span id="shName"></span> Records</h2>
+        <p style="font-weight: bold">
+          Total Time Spend -
+          <span style="color: rgb(21, 241, 21)" id="total">00:00:00</span>
+        </p>
+        <button
+          onclick="resetRecords()"
+          id="resetRecord"
+          style="
+            margin: 0 !important;
+            font-size: 20px;
+            height: 35px;
+            border-radius: 5px;
+            width: 100%;
+          "
+        >
+          Reset Records
+        </button>
+        <p>───────</p>
+        <div class="record-box">
+          <p id="records"></p>
+        </div>
+      </section>
     </div>
     <script src="script.js"></script>
-</body>
-
+  </body>
 </html>

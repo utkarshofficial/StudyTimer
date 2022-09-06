@@ -48,15 +48,22 @@ function reset() {
 
 // for input time seconds to time converter H:M:S
 function calcTime() {
+    let calcT = document.getElementById("calcT");
     var tin = timeIn.value;
-    var calcT = document.getElementById("calcT");
-    ss = parseInt(tin % 60);
-    mm = parseInt((tin / 60) % 60)
-    hh = parseInt((tin / 60) / 60);
-    if (tin == 0 || tin == "") {
+    if(tin === 0){
+        calcT.innerText = "start clock"
+        h=0;
+        m=0;
+        s=0;
+        return;
+    }
+    if (tin == "") {
         calcT.innerHTML = "please enter time";
         return;
     }
+    ss = parseInt(tin % 60);
+    mm = parseInt((tin / 60) % 60)
+    hh = parseInt((tin / 60) / 60);
     let hours = ((hh <= 9) ? ("0" + hh) : hh),
         minutes = ((mm <= 9) ? ("0" + mm) : mm),
         seconds = ((ss <= 9) ? ("0" + ss) : ss);
@@ -97,52 +104,78 @@ function showName() {
 }
 
 async function startTime() {
-    if (timeIn.value == 0 || timeIn.value == "") {
-        return;
-    }
-    running = 1;
-    if (start == 1) {
-        startbtn.innerText = "Start";
-        startbtn.style.backgroundColor = "green";
-    } else {
-        startbtn.style.backgroundColor = "red";
-        startbtn.innerText = "Pause";
-    }
-    start = (start == 0 ? 1 : 0);
-    while (start == 1) {
-        document.title = "Time " + (formatTime(h, m, s))
-        time.innerHTML = formatTime(h, m, s);
-        if ((h == 0 && m == 0 && s == 0)) {
-            running = 0;
-            // for saving the completed time
-            if (hh != 0 || mm != 0 || ss != 0){
-                timeArr.unshift([hh, mm, ss]);
-                localStorage.setItem("records",JSON.stringify(timeArr));
-                document.title = "Study Timer";
-            }
-
+    // for continue time start
+    if(timeIn.value == 0){
+        console.log(timeIn.value);
+        running = 1;
+        if (start == 1) {
             startbtn.innerText = "Start";
-            startbtn.style.backgroundColor = "burlywood";
-            startbtn.style.color = "black";
-            start = 0;
-            records.innerHTML = "";
-            // playing song
-            audio.play();
-            // for Updating record and total time
-            updateRecords();
-            break;
+            startbtn.style.backgroundColor = "green";
+        } else {
+            startbtn.style.backgroundColor = "red";
+            startbtn.innerText = "Pause";
         }
-        if (s == 0) {
-            if (m > 0) {
-                m--;
-            } else if (m == 0 && h > 0) {
-                m = 59;
-                h--;
+        start = (start == 0 ? 1 : 0);
+        while (start == 1) {
+            s++;
+            if(s==60){
+                s=0;
+                m++;
             }
-            s = 60;
+            if(m==60){
+                m=0;
+                h++;
+            }
+            document.title = "Time " + (formatTime(h, m, s));
+            time.innerHTML = formatTime(h, m, s);
+            await sleep(1000);
         }
-        s--;
-        await sleep(1000);
+    }
+    else if (timeIn.value !== "") {
+        running = 1;
+        if (start == 1) {
+            startbtn.innerText = "Start";
+            startbtn.style.backgroundColor = "green";
+        } else {
+            startbtn.style.backgroundColor = "red";
+            startbtn.innerText = "Pause";
+        }
+        start = (start == 0 ? 1 : 0);
+        while (start == 1) {
+            document.title = "Time " + (formatTime(h, m, s))
+            time.innerHTML = formatTime(h, m, s);
+            if ((h == 0 && m == 0 && s == 0)) {
+                running = 0;
+                // for saving the completed time
+                if (hh != 0 || mm != 0 || ss != 0){
+                    timeArr.unshift([hh, mm, ss]);
+                    localStorage.setItem("records",JSON.stringify(timeArr));
+                    document.title = "Study Timer";
+                }
+
+                startbtn.innerText = "Start";
+                startbtn.style.backgroundColor = "burlywood";
+                startbtn.style.color = "black";
+                start = 0;
+                records.innerHTML = "";
+                // playing song
+                audio.play();
+                // for Updating record and total time
+                updateRecords();
+                break;
+            }
+            if (s == 0) {
+                if (m > 0) {
+                    m--;
+                } else if (m == 0 && h > 0) {
+                    m = 59;
+                    h--;
+                }
+                s = 60;
+            }
+            s--;
+            await sleep(1000);
+        }
     }
 }
 // for updating name if it i stored
