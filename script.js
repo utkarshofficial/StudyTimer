@@ -26,6 +26,8 @@ function sleep(ms) {
 
 // reset the recor
 function resetRecords() {
+    if(timeIn.value === 0)
+        return;
     total.innerHTML = "00:00:00";
     timeArr = [];
     localStorage.removeItem("records");
@@ -34,6 +36,12 @@ function resetRecords() {
 
 // Reset all the data
 function reset() {
+    if(timeIn.value == 0){
+        timeArr.unshift([h, m, s]);
+        localStorage.setItem("records",JSON.stringify(timeArr));
+        document.title = "Study Timer";
+        updateRecords();
+    }
     h = 0;
     m = 0;
     s = 0;
