@@ -201,6 +201,7 @@ if(localStorage.getItem("records")){
 // update record funciton
 function updateRecords(){
     let totalSeconds = 0;
+    records.innerHTML = "";
     // for Updating record and total time
     for (let i = 0; i < timeArr.length; i++) {
         let hour = timeArr[i][0],
